@@ -1,10 +1,11 @@
 ---
 # tui-design-agent-exp2-zjg1
 title: 01.2 Design system and validation
-status: todo
+status: completed
 type: epic
+priority: normal
 created_at: 2026-11-15T19:27:17Z
-updated_at: 2026-11-15T19:27:17Z
+updated_at: 2026-11-15T19:58:27Z
 parent: tui-design-agent-exp2-dj8m
 ---
 
