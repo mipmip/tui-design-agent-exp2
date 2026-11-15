@@ -1,10 +1,11 @@
 ---
 # tui-design-agent-exp2-2biz
 title: 01.3 State store
-status: todo
+status: completed
 type: epic
+priority: normal
 created_at: 2026-11-15T19:27:17Z
-updated_at: 2026-11-15T19:27:17Z
+updated_at: 2026-11-15T19:58:35Z
 parent: tui-design-agent-exp2-dj8m
 ---
 
