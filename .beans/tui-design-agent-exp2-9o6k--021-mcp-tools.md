@@ -1,10 +1,11 @@
 ---
 # tui-design-agent-exp2-9o6k
 title: 02.1 MCP tools
-status: todo
+status: completed
 type: epic
+priority: normal
 created_at: 2026-11-15T19:27:17Z
-updated_at: 2026-11-15T19:27:17Z
+updated_at: 2026-11-15T19:58:43Z
 parent: tui-design-agent-exp2-88d4
 ---
 
