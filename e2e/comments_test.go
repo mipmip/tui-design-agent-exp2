@@ -17,7 +17,7 @@ func TestNoCodeComments(t *testing.T) {
 		}
 		if entry.IsDir() {
 			switch entry.Name() {
-			case ".git", ".jj", "result", "node_modules":
+			case ".git", ".jj", "result", "node_modules", "vendor":
 				return filepath.SkipDir
 			}
 			return nil
