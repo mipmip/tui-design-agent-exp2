@@ -1,0 +1,28 @@
+screen: list-view
+sizes:
+  - {cols: 100, rows: 30}
+  - {cols: 80, rows: 24}
+palette:
+  bg: "#1a1b26"
+  fg: "#c0caf5"
+  muted: "#565f89"
+  accent: "#7aa2f7"
+  warn: "#e0af68"
+  sel_bg: "#283457"
+styles:
+  n: {fg: fg}
+  m: {fg: muted}
+  t: {fg: accent, bold: true}
+  a: {fg: accent}
+  w: {fg: warn}
+  b: {fg: muted}
+  s: {fg: fg, bg: sel_bg, bold: true}
+  k: {fg: bg, bg: accent}
+borders: [rounded]
+symbols: ["▸", "●", "○", "↑", "↓", "…"]
+rules:
+  - One accent colour; warn only for things needing attention
+  - Selection is a full-width bar, never just a cursor glyph
+  - Footer row shows the 4-6 most useful keys as k-styled chips
+  - Numbers right-aligned; truncate long paths with … in the middle
+  - Never fill more than about 70% of cells with text

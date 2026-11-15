@@ -1,0 +1,8 @@
+╭─ k9s ─────────────────────────────────╮
+│ ▸ default      deploy/web      3/3   │
+│   default      deploy/api      2/2   │
+│   kube-system  ds/fluent-bit   1/1   │
+│   default      pod/web-7d9f     1/1  │
+│                                      │
+│ :cmd  /filter  d describe  l logs  q quit│
+╰──────────────────────────────────────╯

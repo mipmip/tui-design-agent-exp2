@@ -1,0 +1,9 @@
+╭─ beans ───────────────────────────────╮
+│ ▸ 01 Foundation          3/7         │
+│   02 Agent interface     0/4         │
+│   03 Verification        0/3         │
+│                                      │
+│ ○ overdue: tui-dj8m  stale: tui-2biz │
+│                                      │
+│ enter open  / filter  s sort  r refresh  q quit│
+╰──────────────────────────────────────╯
