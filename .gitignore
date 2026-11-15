@@ -1,0 +1,8 @@
+/result
+/result-*
+/.direnv
+/.envrc
+/.tuimock
+/dist
+*.test
+coverage.out
