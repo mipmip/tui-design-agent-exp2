@@ -1,10 +1,11 @@
 ---
 # tui-design-agent-exp2-vzy0
 title: 03.2 E2E and alpha handoff
-status: todo
+status: completed
 type: epic
+priority: normal
 created_at: 2026-11-15T19:27:17Z
-updated_at: 2026-11-15T19:27:17Z
+updated_at: 2026-11-15T19:59:07Z
 parent: tui-design-agent-exp2-a0hk
 ---
 
