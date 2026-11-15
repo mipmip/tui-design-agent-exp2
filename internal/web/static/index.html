@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tuimock · {{SCREEN}}</title>
+<style>
+:root{color-scheme:dark}
+body{margin:0;background:#11131a;color:#c0caf5;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:16px 24px;border-bottom:1px solid #2a2e3f}
+.top h1{margin:0;font-size:18px;font-weight:600;letter-spacing:.02em}
+.top .meta{color:#565f89;font-size:13px}
+.scroller{overflow-x:auto;padding:24px}
+.gallery{display:flex;gap:24px;align-items:flex-start;width:max-content}
+.card{background:#161821;border:1px solid #2a2e3f;border-radius:10px;padding:16px;min-width:max-content}
+.card.picked{border-color:#7aa2f7;box-shadow:0 0 0 1px #7aa2f7}
+.card header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
+.card h2{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#c0caf5}
+.badge{font-size:12px;color:#565f89;border:1px solid #2a2e3f;border-radius:999px;padding:2px 8px}
+.card.picked .badge{color:#7aa2f7;border-color:#7aa2f7}
+.grid{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.2;white-space:pre;background:#1a1b26;border:1px solid #2a2e3f;border-radius:6px;padding:8px;width:max-content}
+.grid .row{height:1.2em}
+.grid span{white-space:pre}
+.meta{display:flex;gap:12px;color:#565f89;font-size:12px;margin-bottom:6px}
+.rationale{color:#565f89;font-size:13px;max-width:70ch;margin:10px 0}
+.comments{list-style:none;padding:0;margin:0 0 10px;font-size:13px}
+.comments li{border-left:2px solid #7aa2f7;padding-left:8px;margin:4px 0}
+footer{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+footer label{display:flex;gap:6px;align-items:center;font-size:12px;color:#565f89}
+select,textarea,button{font:inherit;font-size:13px;background:#1a1b26;color:#c0caf5;border:1px solid #2a2e3f;border-radius:6px;padding:6px 8px}
+textarea{flex:1 1 220px;resize:vertical}
+button{cursor:pointer}
+button:hover{border-color:#7aa2f7}
+.pick{background:#283457}
+.empty{color:#565f89;padding:24px}
+{{STYLES}}
+</style>
+</head>
+<body>
+<header class="top"><h1>tuimock</h1><span class="meta">{{SCREEN}} · true character size · refreshes every second</span></header>
+<div class="scroller"><div class="gallery" id="gallery">{{CARDS}}</div></div>
+<script>
+(function(){
+var selected = new Map();
+var drafts = new Map();
+var gallery = document.getElementById('gallery');
+var last = '';
+function applyView(){
+  gallery.querySelectorAll('.card').forEach(function(card){
+    var variant = card.dataset.variant;
+    var sections = card.querySelectorAll('.version');
+    if(!sections.length) return;
+    var want = selected.get(variant) || card.dataset.latestVersion;
+    sections.forEach(function(section){ section.hidden = section.dataset.version !== String(want); });
+    var select = card.querySelector('.version-select');
+    if(select) select.value = String(want);
+    var area = card.querySelector('.comment');
+    if(area && drafts.has(variant)) area.value = drafts.get(variant);
+  });
+}
+async function loadFragment(){
+  try {
+    var response = await fetch('/fragment', {cache:'no-store'});
+    if(!response.ok) return;
+    var text = await response.text();
+    if(text === last) return;
+    var active = document.activeElement;
+    var card = active && active.closest ? active.closest('.card') : null;
+    var variant = card ? card.dataset.variant : null;
+    var cls = active && active.className ? String(active.className).split(' ')[0] : null;
+    var start = active && typeof active.selectionStart === 'number' ? active.selectionStart : null;
+    last = text;
+    gallery.innerHTML = text;
+    applyView();
+    if(variant && cls){
+      var restored = gallery.querySelector('.card[data-variant="' + variant + '"] .' + cls);
+      if(restored && restored.focus){
+        restored.focus();
+        if(start !== null && restored.setSelectionRange){ try { restored.setSelectionRange(start, start); } catch(e) {} }
+      }
+    }
+  } catch(e) {}
+}
+async function post(url, body){
+  var response = await fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  if(!response.ok) console.error(await response.text());
+}
+gallery.addEventListener('change', function(event){
+  var target = event.target;
+  if(target.classList.contains('version-select')){
+    var card = target.closest('.card');
+    selected.set(card.dataset.variant, target.value);
+    applyView();
+  }
+});
+gallery.addEventListener('input', function(event){
+  var target = event.target;
+  if(target.classList.contains('comment')){
+    drafts.set(target.closest('.card').dataset.variant, target.value);
+  }
+});
+gallery.addEventListener('click', async function(event){
+  var target = event.target;
+  var card = target.closest('.card');
+  if(!card) return;
+  if(target.classList.contains('pick')){
+    await post('/api/pick', {mockup_id: card.dataset.latestId});
+  }
+  if(target.classList.contains('send')){
+    var shown = card.querySelector('.version:not([hidden])');
+    var area = card.querySelector('.comment');
+    var text = area.value.trim();
+    if(!shown || !text) return;
+    await post('/api/comment', {mockup_id: shown.dataset.id, text: text});
+    drafts.delete(card.dataset.variant);
+    area.value = '';
+  }
+  last = '';
+  await loadFragment();
+});
+setInterval(function(){ if(!document.hidden) loadFragment(); }, 1000);
+loadFragment();
+})();
+</script>
+</body>
+</html>
